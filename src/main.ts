@@ -24,9 +24,9 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Phone Management API')
+    .setTitle('Bibip Management API')
     .setDescription(
-      'API robusta para gerenciamento de telefones, integrada com MongoDB e pronta para Pagar.me.<br>' +
+      'API robusta para gerenciamento de delivery, integrada com MongoDB e pronta para Pagar.me.<br>' +
         '<i>Utilize as rotas abaixo para realizar operações de CRUD.</i>',
     )
     .setVersion('1.0.0')
