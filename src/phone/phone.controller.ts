@@ -1,14 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { PhoneService } from './phone.service';
-import { CreatePhoneDto } from './dto/create-phone.dto';
-import { UpdatePhoneDto } from './dto/update-phone.dto';
 
-@Controller('phone')
+@Controller('phones') // Define a rota base como /phones
 export class PhoneController {
   constructor(private readonly phoneService: PhoneService) {}
 
   @Post()
-  create(@Body() createPhoneDto: CreatePhoneDto) {
+  create(@Body() createPhoneDto: any) {
     return this.phoneService.create(createPhoneDto);
   }
 
@@ -19,16 +25,16 @@ export class PhoneController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.phoneService.findOne(+id);
+    return this.phoneService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePhoneDto: UpdatePhoneDto) {
-    return this.phoneService.update(+id, updatePhoneDto);
+  @Put(':id')
+  update(@Param('id') id: string, @Body() updatePhoneDto: any) {
+    return this.phoneService.update(id, updatePhoneDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.phoneService.remove(+id);
+    return this.phoneService.remove(id);
   }
 }

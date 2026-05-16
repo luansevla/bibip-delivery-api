@@ -1,26 +1,47 @@
-import { Injectable } from '@nestjs/common';
-import { CreatePhoneDto } from './dto/create-phone.dto';
-import { UpdatePhoneDto } from './dto/update-phone.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Phone, PhoneDocument } from './schema/phone.schema';
 
 @Injectable()
 export class PhoneService {
-  create(createPhoneDto: CreatePhoneDto) {
-    return 'This action adds a new phone';
+  constructor(
+    @InjectModel(Phone.name) private phoneModel: Model<PhoneDocument>,
+  ) {}
+
+  async create(createPhoneDto: any): Promise<Phone> {
+    const createdPhone = new this.phoneModel(createPhoneDto);
+    return createdPhone.save();
   }
 
-  findAll() {
-    return `This action returns all phone`;
+  async findAll(): Promise<Phone[]> {
+    return this.phoneModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} phone`;
+  async findOne(id: string): Promise<Phone> {
+    const phone = await this.phoneModel.findById(id).exec();
+    if (!phone) {
+      throw new NotFoundException(`Telefone com ID ${id} não encontrado`);
+    }
+    return phone;
   }
 
-  update(id: number, updatePhoneDto: UpdatePhoneDto) {
-    return `This action updates a #${id} phone`;
+  async update(id: string, updatePhoneDto: any): Promise<Phone> {
+    const updatedPhone = await this.phoneModel
+      .findByIdAndUpdate(id, updatePhoneDto, { new: true }) // { new: true } retorna o objeto já atualizado
+      .exec();
+
+    if (!updatedPhone) {
+      throw new NotFoundException(`Telefone com ID ${id} não encontrado`);
+    }
+    return updatedPhone;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} phone`;
+  async remove(id: string): Promise<any> {
+    const result = await this.phoneModel.findByIdAndDelete(id).exec();
+    if (!result) {
+      throw new NotFoundException(`Telefone com ID ${id} não encontrado`);
+    }
+    return { deleted: true };
   }
 }
